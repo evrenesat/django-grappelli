@@ -128,7 +128,13 @@ class M2MLookup(RelatedLookup):
             except (self.model.DoesNotExist, ValueError):
                 data.append({"value": obj_id, "label": _("?")})
         return data
+    
+def tupper(w):
+    return w.replace('i', 'İ').replace('ı', 'I').upper()
 
+
+def tlower(w):
+    return w.replace('I', 'ı').replace('İ', 'i').lower()
 
 class AutocompleteLookup(RelatedLookup):
     "AutocompleteLookup"
@@ -148,7 +154,11 @@ class AutocompleteLookup(RelatedLookup):
         search_fields = get_autocomplete_search_fields(self.model)
         if search_fields:
             for word in term.split():
-                search = [models.Q(**{smart_text(item): smart_text(word)}) for item in search_fields]
+                search = []
+                for item in search_fields:
+                    search.append(models.Q(**{smart_text(item): tlower(smart_text(word))}))
+                    search.append(models.Q(**{smart_text(item): tupper(smart_text(word))}))
+                #search = [models.Q(**{smart_text(item): smart_text(word)}) for item in search_fields]
                 search_qs = QuerySet(model)
                 search_qs.query.select_related = qs.query.select_related
                 search_qs = search_qs.filter(reduce(operator.or_, search))
