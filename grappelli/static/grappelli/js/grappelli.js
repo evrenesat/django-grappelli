@@ -70,6 +70,8 @@ var inputTypes = [
             showOn: 'button',
             buttonImageOnly: false,
             buttonText: '',
+            changeMonth: true,
+            changeYear: true,
             dateFormat: grappelli.getFormat('date'),
             showButtonPanel: true,
             showAnim: '',
